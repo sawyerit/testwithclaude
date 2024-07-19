@@ -5,13 +5,18 @@ import nock from 'nock';
 const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 const PHONE_REGEX = /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g;
 
+// Define constants for endpoint URLs
+const BASE_URL = 'https://example.com';
+const FILE_ENDPOINT = `${BASE_URL}/file-endpoint`;
+const CHECK_ENDPOINT = `${BASE_URL}/check-endpoint`;
+
 // Define the type for the request body
 interface CheckContactRequest {
   contact: string;
 }
 
 // Stub HTTP endpoints
-nock('https://example.com')
+nock(BASE_URL)
   .get('/file-endpoint')
   .reply(200, `
     Test content with emails and phone numbers:
@@ -21,7 +26,7 @@ nock('https://example.com')
     123.456.7890
   `);
 
-nock('https://example.com')
+nock(BASE_URL)
   .post('/check-endpoint')
   .reply(200, (uri, requestBody: CheckContactRequest) => {
     const { contact } = requestBody;
@@ -34,7 +39,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     console.log('Lambda function started');
 
     // Call GET endpoint to retrieve file content
-    const getResponse = await axios.get('https://example.com/file-endpoint');
+    const getResponse = await axios.get(FILE_ENDPOINT);
     const fileContent = getResponse.data;
 
     // Extract emails and phone numbers
@@ -51,7 +56,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const validContacts = [];
     for (const contact of contacts) {
       try {
-        const postResponse = await axios.post<boolean>('https://example.com/check-endpoint', { contact } as CheckContactRequest);
+        const postResponse = await axios.post<boolean>(CHECK_ENDPOINT, { contact } as CheckContactRequest);
         if (postResponse.data === true) {
           validContacts.push(contact);
           console.log(`Valid contact found: ${contact}`);
