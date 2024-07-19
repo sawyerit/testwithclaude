@@ -1,0 +1,32 @@
+{
+  "name": "email-phone-lambda",
+  "version": "1.0.0",
+  "description": "AWS Lambda for processing emails and phone numbers",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "test": "jest",
+    "start": "sam local invoke EmailPhoneLambda -e events/event.json"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/bedrock-sdk": "^0.10.1",
+    "@types/aws-lambda": "^8.10.141",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.11",
+    "axios": "^1.7.2",
+    "esbuild": "^0.23.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.2",
+    "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "nock": "^13.3.0"
+  }
+}

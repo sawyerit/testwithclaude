@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Email and Phone Number Processing Lambda
+
+Resources:
+  EmailPhoneLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs18.x
+      CodeUri: ./dist
+      Environment:
+        Variables:
+          FILE_ENDPOINT: https://example.com/file-endpoint
+          CHECK_ENDPOINT: https://example.com/check-endpoint
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /process
+            Method: get
+
+Outputs:
+  EmailPhoneLambdaApi:
+    Description: "API Gateway endpoint URL for EmailPhoneLambda function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/process/"
