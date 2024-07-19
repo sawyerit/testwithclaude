@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import axios from 'axios';
 import nock from 'nock';
+import Colors from './Colors';
 
 const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 const PHONE_REGEX = /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g;
@@ -37,6 +38,9 @@ nock(BASE_URL)
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     console.log('Lambda function started');
+    
+    const randomColor = Colors.getRandomColor();
+    console.log(`Random color generated: ${randomColor}`);
 
     // Call GET endpoint to retrieve file content
     const getResponse = await axios.get(FILE_ENDPOINT);
@@ -72,7 +76,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Processing complete', validContacts }),
+      body: JSON.stringify({ message: 'Processing complete', validContacts, randomColor }),
     };
   } catch (error) {
     console.error('Error in Lambda handler:', error);
